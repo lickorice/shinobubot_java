@@ -32,14 +32,27 @@ public class AddCustomCommand extends Command
             Logger logger = LoggerFactory.getLogger("org.georgyorgy1.shinobu.commands.util.AddCustomCommand");
             String[] args = ce.getArgs().split("\\s+");
             List<String> temp = new ArrayList<>();
-            int i = 0;
+            
 
+            // This checks for subsequent | characters and warns the user
+            for (int g = 1; g <= args.length; g++)
+            {
+                // Checks if there are any adjacent | characters
+                if (args[g-1] == args[g] && args[g].equals("|"))
+                {
+                    ce.reply("Please avoid placing two vertical bars (this character: |) **next to each other.**);
+                    // Breaks the function
+                    return 0;
+                }
+            }
+
+            int i = 0;
             while (!args[i].equals("|"))
             {
                 temp.add(args[i]);
                 i++;
             }
-
+            
             String commandName = String.join(" ", temp);
             String response = "";
 
@@ -76,6 +89,8 @@ public class AddCustomCommand extends Command
             catch (SQLException exception)
             {
                 logger.error(exception.toString(), exception);
+                // Reply to show that command was invalid
+                ce.reply("Failed to add custom reaction! Please do !help for more information.");
             }
             
             try
